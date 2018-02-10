@@ -1,0 +1,27 @@
+
+#BSUB -J test         #Set the job name to "ExampleJob2"
+#BSUB -L /bin/bash           #Uses the bash login shell to initialize the job's execution environment.
+#BSUB -W 0:10                #Set the wall clock limit to 6hr and 30min
+#BSUB -n 20                  #Request n cores
+#BSUB -R "span[ptile=20]"    #Request n cores per node.
+#BSUB -R "rusage[mem=2560]"  #Request 2560MB per process (CPU) for the job
+#BSUB -M 2560                #Set the per process enforceable memory limit to 2560MB.
+#BSUB -o testOut.%J      #Send stdout and stderr to "Example2Out.[jobID]"
+
+OMP_NESTED=TRUE
+module load  intel/2017A
+export OMP_STACKSIZE=512M
+
+export OMP_NUM_THREADS=20
+./Rinverse 8192
+
+export OMP_NUM_THREADS=10
+./Rinverse 8192
+
+export OMP_NUM_THREADS=4
+./Rinverse 8192
+
+export OMP_NUM_THREADS=2
+./Rinverse 8192
+
+./ori 6144
